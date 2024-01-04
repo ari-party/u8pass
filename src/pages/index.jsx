@@ -9,6 +9,7 @@ import Typography from '@mui/joy/Typography';
 import Refresh from '@mui/icons-material/Refresh';
 import Head from 'next/head';
 import React, { useMemo, useState } from 'react';
+import { rgbToHex } from '@mui/material';
 
 import Page from '@/components/layout/page';
 import Copy from '@/components/buttons/copy';
@@ -64,7 +65,15 @@ export default function Index() {
           content="Generate random UTF-8 passwords"
         />
         <meta property="og:type" content="website" />
-        <meta name="theme-color" content={theme.palette.danger.mainChannel} />
+        <meta
+          name="theme-color"
+          content={rgbToHex(
+            `rgb(${theme.colorSchemes.dark.palette.danger.mainChannel.replace(
+              / /g,
+              ',',
+            )})`,
+          )}
+        />
       </Head>
       <Page>
         <Stack gap={4}>
@@ -77,6 +86,10 @@ export default function Index() {
 
           <Input
             variant="plain"
+            color="danger"
+            sx={{
+              color: theme.colorSchemes.dark.palette.neutral.plainColor,
+            }}
             onKeyDown={(event) => event.preventDefault()}
             endDecorator={
               <Stack direction="row" gap={1}>
