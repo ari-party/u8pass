@@ -16,6 +16,7 @@ import { ofLength } from '@/utils/string';
 import { randomBMP } from '@/utils/utf-8';
 import { toWords } from '@/utils/time';
 import zxcvbn from '@/utils/zxcvbn';
+import { theme } from '@/components/theme';
 
 function Label({ children, title, ...props }) {
   return (
@@ -58,6 +59,12 @@ export default function Index() {
     <>
       <Head>
         <title>u8pass</title>
+        <meta
+          property="description"
+          content="Generate random UTF-8 passwords"
+        />
+        <meta property="og:type" content="website" />
+        <meta name="theme-color" content={theme.palette.danger.mainChannel} />
       </Head>
       <Page>
         <Stack gap={4}>
