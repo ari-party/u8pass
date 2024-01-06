@@ -14,10 +14,11 @@ import { rgbToHex } from '@mui/material';
 import Page from '@/components/layout/page';
 import Copy from '@/components/buttons/copy';
 import { ofLength } from '@/utils/string';
-import { randomBMP } from '@/utils/utf-8';
+import { codePoints, randomBMP } from '@/utils/utf-8';
 import { toWords } from '@/utils/time';
 import zxcvbn from '@/utils/zxcvbn';
 import { theme } from '@/components/theme';
+import { numberToText } from '@/utils/number';
 
 function Label({ children, title, ...props }) {
   return (
@@ -55,6 +56,8 @@ export default function Index() {
   }
 
   useMemo(generatePassword, [length]);
+
+  const possibleCombinations = codePoints ** length;
 
   return (
     <>
@@ -108,6 +111,9 @@ export default function Index() {
               gap: 1.25,
               justifyContent: 'space-between',
               flexWrap: 'wrap',
+              '& > div': {
+                flex: `1 0 calc(50% - ${theme.spacing(1.25 / 2)})`,
+              },
             }}
           >
             <Stack>
@@ -121,6 +127,15 @@ export default function Index() {
                 Time to crack (Throttled)
               </Label>
               <Typography>{toWords(ttcThrottled)}</Typography>
+            </Stack>
+            <Stack>
+              <Label>Possible combinations</Label>
+              <Typography
+                component="abbr"
+                title={possibleCombinations.toLocaleString()}
+              >
+                {numberToText(possibleCombinations)}
+              </Typography>
             </Stack>
           </Box>
 
@@ -138,6 +153,7 @@ export default function Index() {
                   variant="solid"
                   min={12}
                   max={40}
+                  value={length}
                   onChange={(event) => setLength(event.target.value)}
                 />
               </Stack>

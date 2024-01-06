@@ -2,7 +2,7 @@ import punycode from 'punycode.js';
 
 import { randomFloat } from './crypto';
 
-const codePoints = 1_114_112; // Amount of code points available in the range 0x0 and 0x10FFFF
+export const codePoints = 1_114_112; // Amount of code points available in the range 0x0 and 0x10FFFF
 
 /**
  * Generate a random code point
