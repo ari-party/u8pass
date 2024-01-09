@@ -10,13 +10,13 @@ import Refresh from '@mui/icons-material/Refresh';
 import Head from 'next/head';
 import React, { useMemo, useState } from 'react';
 import { rgbToHex } from '@mui/material';
+import BigNumber from 'bignumber.js';
 
 import Page from '@/components/layout/page';
 import Copy from '@/components/buttons/copy';
 import { ofLength } from '@/utils/string';
 import { codePoints, randomBMP } from '@/utils/utf-8';
 import { toWords } from '@/utils/time';
-import zxcvbn from '@/utils/zxcvbn';
 import { theme } from '@/components/theme';
 import { numberToText } from '@/utils/number';
 
@@ -39,25 +39,22 @@ function SettingsLabel({ children, ...props }) {
 export default function Index() {
   const [password, setPassword] = useState('');
   const [length, setLength] = useState(18);
-  const [ttcThrottled, setTtcThrottled] = useState(0);
-  const [ttc, setTtc] = useState(0);
+  const [ttc, setTtc] = useState('');
+  const [possibleCombinations, setPossibleCombinations] = useState('');
 
   async function generatePassword() {
     const newPassword = await ofLength(length, randomBMP);
     setPassword(newPassword);
 
-    const zxcvbnResult = zxcvbn(newPassword);
-    setTtcThrottled(
-      Math.ceil(zxcvbnResult.crackTimesSeconds.onlineThrottling100PerHour),
+    const possibleCombinationsCalculation = new BigNumber(codePoints).pow(
+      length,
     );
-    setTtc(
-      Math.ceil(zxcvbnResult.crackTimesSeconds.offlineFastHashing1e10PerSecond),
-    );
+
+    setPossibleCombinations(possibleCombinationsCalculation.toNumber());
+    setTtc(possibleCombinationsCalculation.div(1e10));
   }
 
   useMemo(generatePassword, [length]);
-
-  const possibleCombinations = codePoints ** length;
 
   return (
     <>
@@ -121,12 +118,6 @@ export default function Index() {
                 Time to crack
               </Label>
               <Typography>{toWords(ttc)}</Typography>
-            </Stack>
-            <Stack>
-              <Label title="Time to crack if online and throttled (1.6 H/s)">
-                Time to crack (Throttled)
-              </Label>
-              <Typography>{toWords(ttcThrottled)}</Typography>
             </Stack>
             <Stack>
               <Label>Possible combinations</Label>
